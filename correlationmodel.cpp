@@ -59,6 +59,67 @@ QImage CorrelationModel::translateToGrayScale(const QImage &image)
     return monoImage;
 }
 
+QPair<float, QPair<int, int> > &&CorrelationModel::getMaxFromData(QVector<float> &data)
+{
+    QPair<float, QPair<int, int>> maxPair;
+    QPair<int, int> maxIndex;
+    auto iter = std::max_element(data.begin(), data.end());
+
+    if (correlationWidth != 0) {
+
+        int width = 0, height = 0;
+
+        //ищем положение
+        for (auto i = data.begin(); i!= data.end(); ++i) {
+
+            if (i == iter) {
+                height = width/correlationWidth;
+                width -= height * correlationWidth;
+                break;
+            }
+
+            ++width;
+        }
+
+        maxIndex = qMakePair(width, height);
+    }
+
+    maxPair = qMakePair(*iter, maxIndex);
+
+    return std::move(maxPair);
+}
+
+QPair<float, QPair<int, int> > &&CorrelationModel::getMinFromData(QVector<float> &data)
+{
+    QPair<float, QPair<int, int>> minPair;
+    QPair<int, int> minIndex;
+
+    auto iter = std::min_element(data.begin(), data.end());
+
+    if (correlationWidth != 0) {
+
+        int width = 0, height = 0;
+
+        //ищем положение
+        for (auto i = data.begin(); i!= data.end(); ++i) {
+
+            if (i == iter) {
+                height = width/correlationWidth;
+                width -= height * correlationWidth;
+                break;
+            }
+
+            ++width;
+        }
+
+        minIndex = qMakePair(width, height);
+    }
+
+    minPair = qMakePair(*iter, minIndex);
+
+    return std::move(minPair);
+}
+
 unsigned int CorrelationModel::evalCorr2D(const QImage& workImage, const QImage& sampleImage, QVector<float>& data)
 {
     //базовая проверка
@@ -70,9 +131,6 @@ unsigned int CorrelationModel::evalCorr2D(const QImage& workImage, const QImage&
         if (!data.empty()) {
             data.clear();
         }
-
-        sampleME = CorrelationModel::calculateSampleME(sampleImage);                //вычисляем эталонное МО
-        sampleMSD = CorrelationModel::calculateSampleMSD(sampleImage);              //вычисляем эталонное MSD
 
         //алгоритм вычисления элементов корреляционной матрицы
         int corMatrRowLength = workImage.height() - sampleImage.height();
@@ -174,10 +232,16 @@ unsigned int CorrelationModel::evalCorr2D(const QImage& workImage, const QImage&
     return correlationWidth;
 }
 
+void CorrelationModel::calculateSampleMEandMSD(const QImage &image)
+{
+    sampleME = CorrelationModel::calculateSampleME(image);
+    sampleMSD = CorrelationModel::calculateSampleMSD(image);
+}
+
 
 //статические поля
 float CorrelationModel::sampleME = 0;
 float CorrelationModel::sampleMSD = 0;
-float CorrelationModel::correlationWidth = 0;
+int CorrelationModel::correlationWidth = 0;
 
 

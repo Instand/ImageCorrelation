@@ -32,6 +32,7 @@ void MainWindow::getVector()
     QImage sampleImage(QApplication::applicationDirPath() + "/Pics/sample.bmp");
     QVector<float> data;
 
+    CorrelationModel::calculateSampleMEandMSD(sampleImage);
     int width = CorrelationModel::evalCorr2D(workImage, sampleImage, data);
 
     browser->append(QString::number(width));
@@ -43,4 +44,6 @@ void MainWindow::getVector()
     }
 
     browser->append(str);
+    QPair<float, QPair<int, int>> pair = CorrelationModel::getMaxFromData(data);
+    browser->append(QString::number(pair.first) + " x: " + QString::number(pair.second.first) + " y; " + QString::number(pair.second.second));
 }

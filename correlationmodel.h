@@ -4,6 +4,8 @@
 #include <QImage>
 #include <QVector>
 #include <QRgb>
+#include <QPair>
+#include <algorithm>
 
 //Мат ожидание - mathematical expectation (ME)
 //СКО - mean square deviation (MSD)
@@ -14,7 +16,7 @@ private:
     CorrelationModel();                     //не создавать объект класса! :)
     static float sampleME;                  //эталонное МО
     static float sampleMSD;                 //эталонное СКО
-    static float correlationWidth;
+    static int correlationWidth;
 
     //вспомогательные функции
     static float calculateSampleME(const QImage& sample);
@@ -25,8 +27,16 @@ public:
     //преобразование изображения в монохромное
     static QImage translateToGrayScale(const QImage& image);
 
-    //в вектор data записываются данные - т.е яркости пикселей. Необходимо передавать пустой вектора обязательно!
+    //в вектор data записываются данные - т.е яркости пикселей
     static unsigned int evalCorr2D(const QImage& workImage, const QImage& sampleImage, QVector<float>& data);
+
+    //разовое вычисление ME and MSD
+    static void calculateSampleMEandMSD(const QImage& image);
+
+    //нахождение максимума в векторе и возврат его i,j в изображении
+    //first - max value, second - i,j
+    static QPair<float, QPair<int, int>>&& getMaxFromData(QVector<float>& data);
+    static QPair<float, QPair<int, int>>&& getMinFromData(QVector<float>& data);
 };
 
 #endif // CORRELATIONMODEL_H
