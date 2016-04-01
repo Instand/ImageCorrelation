@@ -122,10 +122,11 @@ QPair<float, QPair<int, int> > &&CorrelationModel::getMinFromData(QVector<float>
 
 QImage&& CorrelationModel::getImageFromData(QVector<float>& data)
 {
-
+    QImage image(width, height, QImage::Format_RGB32);
+    return std::move(image);
 }
 
-QPair<int, int> CorrelationModel::getSize() const
+QPair<int, int> CorrelationModel::getSize()
 {
     return qMakePair(width, height);
 }
@@ -133,7 +134,7 @@ QPair<int, int> CorrelationModel::getSize() const
 void CorrelationModel::setSize(int _width, int _height)
 {
     CorrelationModel::width = _width;
-    CorrelationModel::height _heigt;
+    CorrelationModel::height = _height;
 }
 
 void CorrelationModel::setSize(QPair<int, int> size)

@@ -44,7 +44,7 @@ public:
     static QImage&& getImageFromData(QVector<float>& data);
 
     //получение информации о размерах корреляционного изображения
-    static QPair<int, int> getSize() const;
+    static QPair<int, int> getSize();
 
     //ручная установка размеров
     static void setSize(int _width, int _height);
