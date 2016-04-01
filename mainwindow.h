@@ -14,6 +14,7 @@ class MainWindow : public QMainWindow
     QPushButton* saveButton;
     QPushButton* corrButton;
     QTextBrowser* browser;
+    QVector<float> data;
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();

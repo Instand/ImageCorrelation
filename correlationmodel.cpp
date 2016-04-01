@@ -120,6 +120,28 @@ QPair<float, QPair<int, int> > &&CorrelationModel::getMinFromData(QVector<float>
     return std::move(minPair);
 }
 
+QImage&& CorrelationModel::getImageFromData(QVector<float>& data)
+{
+
+}
+
+QPair<int, int> CorrelationModel::getSize() const
+{
+    return qMakePair(width, height);
+}
+
+void CorrelationModel::setSize(int _width, int _height)
+{
+    CorrelationModel::width = _width;
+    CorrelationModel::height _heigt;
+}
+
+void CorrelationModel::setSize(QPair<int, int> size)
+{
+    CorrelationModel::width = size.first;
+    CorrelationModel::height = size.second;
+}
+
 unsigned int CorrelationModel::evalCorr2D(const QImage& workImage, const QImage& sampleImage, QVector<float>& data)
 {
     //базовая проверка
@@ -135,6 +157,10 @@ unsigned int CorrelationModel::evalCorr2D(const QImage& workImage, const QImage&
         //алгоритм вычисления элементов корреляционной матрицы
         int corMatrRowLength = workImage.height() - sampleImage.height();
         int corMatrColLength = workImage.width() - sampleImage.width();
+
+        //заполнение статических полей, на всякий
+        width = corMatrColLength;
+        height = corMatrRowLength;
 
         data.reserve(corMatrColLength * corMatrRowLength);
 
@@ -243,5 +269,7 @@ void CorrelationModel::calculateSampleMEandMSD(const QImage &image)
 float CorrelationModel::sampleME = 0;
 float CorrelationModel::sampleMSD = 0;
 int CorrelationModel::correlationWidth = 0;
+int CorrelationModel::width = 0;
+int CorrelationModel::height = 0;
 
 

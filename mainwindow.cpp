@@ -30,7 +30,6 @@ void MainWindow::getVector()
 {
     QImage workImage(QApplication::applicationDirPath() + "/Pics/test.bmp");
     QImage sampleImage(QApplication::applicationDirPath() + "/Pics/sample.bmp");
-    QVector<float> data;
 
     CorrelationModel::calculateSampleMEandMSD(sampleImage);
     int width = CorrelationModel::evalCorr2D(workImage, sampleImage, data);

@@ -17,6 +17,8 @@ private:
     static float sampleME;                  //эталонное МО
     static float sampleMSD;                 //эталонное СКО
     static int correlationWidth;
+    static int width;
+    static int height;
 
     //вспомогательные функции
     static float calculateSampleME(const QImage& sample);
@@ -37,6 +39,16 @@ public:
     //first - max value, second - i,j
     static QPair<float, QPair<int, int>>&& getMaxFromData(QVector<float>& data);
     static QPair<float, QPair<int, int>>&& getMinFromData(QVector<float>& data);
+
+    //сброка изображения из вектора
+    static QImage&& getImageFromData(QVector<float>& data);
+
+    //получение информации о размерах корреляционного изображения
+    static QPair<int, int> getSize() const;
+
+    //ручная установка размеров
+    static void setSize(int _width, int _height);
+    static void setSize(QPair<int, int> size);
 };
 
 #endif // CORRELATIONMODEL_H
