@@ -19,4 +19,4 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     correlationmodel.h
 
-CONFIG += C++11
+CONFIG += C++14

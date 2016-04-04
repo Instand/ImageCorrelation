@@ -59,7 +59,7 @@ QImage CorrelationModel::translateToGrayScale(const QImage &image)
     return monoImage;
 }
 
-QPair<float, QPair<int, int> > &&CorrelationModel::getMaxFromData(QVector<float> &data)
+QPair<float, QPair<int, int> > CorrelationModel::getMaxFromData(QVector<float> &data)
 {
     QPair<float, QPair<int, int>> maxPair;
     QPair<int, int> maxIndex;
@@ -86,10 +86,10 @@ QPair<float, QPair<int, int> > &&CorrelationModel::getMaxFromData(QVector<float>
 
     maxPair = qMakePair(*iter, maxIndex);
 
-    return std::move(maxPair);
+    return maxPair;
 }
 
-QPair<float, QPair<int, int> > &&CorrelationModel::getMinFromData(QVector<float> &data)
+QPair<float, QPair<int, int> > CorrelationModel::getMinFromData(QVector<float> &data)
 {
     QPair<float, QPair<int, int>> minPair;
     QPair<int, int> minIndex;
@@ -117,13 +117,49 @@ QPair<float, QPair<int, int> > &&CorrelationModel::getMinFromData(QVector<float>
 
     minPair = qMakePair(*iter, minIndex);
 
-    return std::move(minPair);
+    return minPair;
 }
 
-QImage&& CorrelationModel::getImageFromData(QVector<float>& data)
+QImage CorrelationModel::getImageFromData(QVector<float>& data)
 {
     QImage image(width, height, QImage::Format_RGB32);
-    return std::move(image);
+    auto vector = data;
+    auto minIter = std::min_element(vector.begin(), vector.end());
+    auto minValue = *minIter;
+    float correactedValue = -minValue;
+
+    using std::for_each;
+
+    for_each(vector.begin(), vector.end(), [&](float& elem) {
+        elem += correactedValue;
+
+        if (elem < 0) {
+            elem = 0;
+        }
+    });
+
+    auto maxIter = std::max_element(vector.begin(), vector.end());
+    auto maxValue = *maxIter;
+
+    for (auto& elem : vector) {
+        elem /= maxValue;
+    }
+
+    for (auto iter = vector.begin(); iter != vector.end(); ++iter) {
+        (*iter) *= 255.0f;
+    }
+
+    //проходим по всем пикселям
+    for (int row = 0; row < image.height(); ++row) {
+        QRgb* line = reinterpret_cast<QRgb*>(image.scanLine(row));
+
+        for (int lineIndex = 0; lineIndex < image.width(); ++lineIndex, ++line) {
+            int intensity = static_cast<int>(std::roundf(vector.at((width * row) + lineIndex)));
+            *line = qRgb(intensity, intensity, intensity);
+        }
+    }
+
+    return image;
 }
 
 QPair<int, int> CorrelationModel::getSize()
@@ -141,6 +177,12 @@ void CorrelationModel::setSize(QPair<int, int> size)
 {
     CorrelationModel::width = size.first;
     CorrelationModel::height = size.second;
+}
+
+void CorrelationModel::setSize(QSize size)
+{
+    CorrelationModel::width = size.width();
+    CorrelationModel::height = size.height();
 }
 
 unsigned int CorrelationModel::evalCorr2D(const QImage& workImage, const QImage& sampleImage, QVector<float>& data)

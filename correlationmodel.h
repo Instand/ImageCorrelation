@@ -37,11 +37,11 @@ public:
 
     //нахождение максимума в векторе и возврат его i,j в изображении
     //first - max value, second - i,j
-    static QPair<float, QPair<int, int>>&& getMaxFromData(QVector<float>& data);
-    static QPair<float, QPair<int, int>>&& getMinFromData(QVector<float>& data);
+    static QPair<float, QPair<int, int>> getMaxFromData(QVector<float>& data);
+    static QPair<float, QPair<int, int>> getMinFromData(QVector<float>& data);
 
     //сброка изображения из вектора
-    static QImage&& getImageFromData(QVector<float>& data);
+    static QImage getImageFromData(QVector<float>& data);
 
     //получение информации о размерах корреляционного изображения
     static QPair<int, int> getSize();
@@ -49,6 +49,7 @@ public:
     //ручная установка размеров
     static void setSize(int _width, int _height);
     static void setSize(QPair<int, int> size);
+    static void setSize(QSize size);
 };
 
 #endif // CORRELATIONMODEL_H

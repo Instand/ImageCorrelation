@@ -4,8 +4,10 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QApplication>
+#include <QLabel>
 #include <QTextBrowser>
 #include <correlationmodel.h>
+#include <chrono>
 
 class MainWindow : public QMainWindow
 {
@@ -13,8 +15,10 @@ class MainWindow : public QMainWindow
 
     QPushButton* saveButton;
     QPushButton* corrButton;
+    QPushButton* timeButton;
     QTextBrowser* browser;
     QVector<float> data;
+    QLabel* label;
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -22,6 +26,7 @@ public:
 public slots:
     void saveToFile();
     void getVector();
+    void getVectorWithImage();
 };
 
 #endif // MAINWINDOW_H
